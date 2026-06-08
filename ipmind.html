@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IP Mind — Case Study | Ana Biriukova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/framer-motion@11.18.2/dist/framer-motion.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0F0F0F;
+      color: #fff;
+      font-family: 'Inter Tight', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* Header */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center;
+      padding: 40px; height: 113px;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: rgba(15,15,15,0.7);
+    }
+    .header-logo {
+      flex: 1; min-width: 1px;
+      font-family: 'Kunstler Script', 'Brush Script MT', cursive;
+      font-size: 40px; line-height: 1.4;
+    }
+    .header-logo a { color: #fff; }
+    .header-nav { flex: 1; min-width: 1px; display: flex; gap: 16px; align-items: center; }
+    .header-nav a {
+      font-weight: 500; font-size: 16px; letter-spacing: -0.16px;
+      line-height: 1.45; color: #fff; position: relative; padding-bottom: 4px;
+    }
+    .header-nav a::after {
+      content:''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: #fff; transition: width 0.3s;
+    }
+    .header-nav a:hover::after { width: 100%; }
+
+    /* Meta bar */
+    .meta-bar {
+      display: flex; padding: 40px 60px; gap: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .meta-item { flex: 1; }
+    .meta-label {
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px; color: #9F9F9F; margin-bottom: 4px;
+    }
+    .meta-value {
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px; color: #fff;
+    }
+
+    /* Hero image */
+    .hero-img {
+      width: 100%; aspect-ratio: 1440/767;
+      background: #1a1a1a; overflow: hidden;
+    }
+    .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Content container */
+    .content { padding: 0 60px; }
+
+    /* Content block - title left, text right */
+    .content-block {
+      padding: 120px 0 0;
+      display: flex; gap: 0; align-items: flex-start;
+    }
+    .content-block + .content-block { padding-top: 80px; }
+    .cb-title {
+      width: 33.33%; flex-shrink: 0;
+      font-weight: 500; font-size: 32px; line-height: 1.25;
+      letter-spacing: -0.64px;
+    }
+    .cb-title .num {
+      display: inline; margin-right: 12px; color: #D56442; font-style: italic;
+    }
+    .cb-text {
+      width: 66.66%;
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px; color: #fff;
+    }
+    .cb-text p + p { margin-top: 24px; }
+
+    /* Bullet list */
+    .bullet-list {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .bullet-list li {
+      position: relative; padding-left: 16px;
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px;
+    }
+    .bullet-list li + li { margin-top: 8px; }
+    .bullet-list li::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: #9F9F9F;
+    }
+    .constraints-list {
+      margin-top: 24px;
+    }
+    .constraints-list li {
+      font-weight: 400; font-size: 16px; line-height: 1.53;
+      color: #9F9F9F;
+    }
+
+    /* Full-width image blocks */
+    .img-block {
+      margin: 60px 0 0;
+      border-radius: 4px; overflow: hidden;
+      background: #1a1a1a;
+    }
+    .img-block img { width: 100%; display: block; }
+    .img-block.padded { margin-left: 60px; margin-right: 60px; }
+
+    /* Image placeholder */
+    .img-placeholder {
+      background: #1f1f1f;
+      display: flex; align-items: center; justify-content: center;
+      color: #9F9F9F; font-size: 14px; font-weight: 500;
+      border-radius: 4px; overflow: hidden;
+    }
+
+    /* Quote */
+    .quote-block {
+      margin: 60px 0 0; padding-left: 33.33%;
+    }
+    .quote-card {
+      position: relative; padding: 24px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .quote-text {
+      font-style: italic; font-weight: 400; font-size: 24px;
+      line-height: 1.35; letter-spacing: -0.24px; color: #D56442;
+      margin-bottom: 40px;
+    }
+    .quote-author {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .quote-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: #333;
+    }
+    .quote-name {
+      font-weight: 400; font-size: 15px; color: #9F9F9F;
+    }
+
+    /* Section label + text (small title left) */
+    .section-label-block {
+      padding: 80px 60px 0;
+      display: flex; align-items: flex-start; gap: 0;
+    }
+    .sl-label {
+      width: 33.33%;
+      font-weight: 500; font-size: 16px; line-height: 1.06;
+      letter-spacing: -0.16px;
+    }
+    .sl-text {
+      width: 66.66%;
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px;
+    }
+
+    /* Cards row */
+    .cards-row {
+      display: flex; gap: 24px; padding: 80px 60px 0;
+    }
+    .diff-card {
+      flex: 1; min-width: 0;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 32px;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      min-height: 252px;
+    }
+    .diff-num {
+      font-weight: 500; font-size: 16px; color: #fff;
+    }
+    .diff-text {
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px; margin-top: auto;
+    }
+
+    /* Copyright */
+    .copyright-block {
+      padding: 120px 60px 0;
+    }
+    .copyright-label {
+      font-weight: 400; font-size: 14px; color: #9F9F9F;
+      margin-bottom: 16px;
+    }
+    .copyright-text {
+      font-weight: 400; font-size: 14px; line-height: 1.6;
+      color: #9F9F9F; max-width: 100%;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 120px;
+      background: #0F0F0F; color: #fff;
+      padding: 40px;
+      display: flex; flex-direction: column; gap: 127px;
+    }
+    .footer-top { display: flex; flex-wrap: wrap; gap: 64px 24px; }
+    .footer-cta {
+      flex: 1; min-width: 466px;
+      font-weight: 500; font-size: clamp(80px, 12.8vw, 184px);
+      text-transform: uppercase; line-height: 0.87; letter-spacing: -3.68px;
+      height: 288px; display: flex; flex-direction: column; justify-content: center;
+    }
+    .footer-right {
+      flex: 1; min-width: 307px; height: 288px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .footer-socials { display: flex; flex-wrap: wrap; gap: 8px; }
+    .social-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 54px; padding: 8px 12px;
+      font-weight: 500; font-size: 16px; letter-spacing: -0.16px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .social-link.filled { background: #fff; color: #0F0F0F; }
+    .social-link.filled:hover { background: #ddd; }
+    .social-link.outlined { border: 1px solid #fff; color: #fff; }
+    .social-link.outlined:hover { background: #fff; color: #0F0F0F; }
+    .social-link svg { width: 16px; height: 16px; }
+    .footer-availability {
+      font-weight: 500; font-size: 32px; line-height: 1.24; letter-spacing: -0.64px;
+    }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 400; font-size: 16px; color: #9F9F9F;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .header { padding: 24px 30px; height: 80px; }
+      .content { padding: 0 30px; }
+      .meta-bar { padding: 30px; flex-wrap: wrap; gap: 20px; }
+      .meta-item { min-width: 45%; }
+      .content-block { flex-direction: column; gap: 24px; }
+      .cb-title, .cb-text { width: 100%; }
+      .quote-block { padding-left: 0; }
+      .section-label-block { padding-left: 30px; padding-right: 30px; flex-direction: column; gap: 16px; }
+      .sl-label, .sl-text { width: 100%; }
+      .cards-row { padding: 60px 30px 0; }
+      .copyright-block { padding: 80px 30px 0; }
+      .footer { padding: 30px; gap: 80px; }
+      .footer-availability { font-size: 26px; }
+    }
+    @media (max-width: 768px) {
+      .header { padding: 16px 20px; height: 64px; }
+      .header-logo { font-size: 32px; }
+      .header-nav a { font-size: 14px; }
+      .content { padding: 0 20px; }
+      .meta-bar { padding: 20px; }
+      .meta-item { min-width: 100%; }
+      .content-block { padding-top: 60px; }
+      .cb-title { font-size: 26px; }
+      .quote-text { font-size: 20px; }
+      .cards-row { flex-direction: column; padding: 40px 20px 0; }
+      .diff-card { min-height: 180px; }
+      .copyright-block { padding: 60px 20px 0; }
+      .section-label-block { padding-left: 20px; padding-right: 20px; }
+      .img-block.padded { margin-left: 20px; margin-right: 20px; }
+      .footer { padding: 20px; gap: 60px; }
+      .footer-cta { min-width: 100%; height: auto; }
+      .footer-right { height: auto; gap: 32px; }
+      .footer-availability { font-size: 22px; }
+      .footer-bottom { flex-direction: column; gap: 8px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { motion, useInView } = window["framer-motion"] || window.Motion;
+    const { useRef, useState, useEffect } = React;
+
+    const ASSETS = {
+      hero: "assets/ipmind-hero.webp",
+      designProcess: "assets/ipmind-design-process.webp",
+      wireflow: "assets/ipmind-wireflow.webp",
+      screen1: "assets/ipmind-screen-1.webp",
+      screen2: "assets/ipmind-screen-2.webp",
+      screen3: "assets/ipmind-screen-3.webp",
+      designSystem: "assets/ipmind-design-system.webp",
+    };
+
+    const fadeUp = { hidden:{opacity:0,y:40}, visible:(i=0)=>({opacity:1,y:0,transition:{duration:0.7,ease:[0.22,1,0.36,1],delay:i*0.12}}) };
+    const fadeIn = { hidden:{opacity:0}, visible:(i=0)=>({opacity:1,transition:{duration:0.6,ease:"easeOut",delay:i*0.1}}) };
+    const scaleIn = { hidden:{opacity:0,scale:0.96}, visible:(i=0)=>({opacity:1,scale:1,transition:{duration:0.8,ease:[0.22,1,0.36,1],delay:i*0.12}}) };
+
+    function SR({children,variants=fadeUp,custom=0,threshold=0.15,style,className}) {
+      const ref=useRef(null);
+      const isInView=useInView(ref,{once:true,amount:threshold});
+      return <motion.div ref={ref} initial="hidden" animate={isInView?"visible":"hidden"} variants={variants} custom={custom} style={style} className={className}>{children}</motion.div>;
+    }
+
+    function DocIcon() { return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M9.333 2v3.333h3.333M5.333 8h5.334M5.333 10.667h5.334M4 14h8a1.333 1.333 0 001.333-1.333V5.333L9.667 2H4A1.333 1.333 0 002.667 3.333v9.334A1.333 1.333 0 004 14z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+    function MailIcon({color="#0F0F0F",size=16}) { return <svg width={size} height={size} viewBox="0 0 20 20" fill="none"><path d="M2.5 6.667l6.875 4.583a1.25 1.25 0 001.25 0L17.5 6.667M4.167 15.833h11.666A1.667 1.667 0 0017.5 14.167V5.833A1.667 1.667 0 0015.833 4.167H4.167A1.667 1.667 0 002.5 5.833v8.334a1.667 1.667 0 001.667 1.666z" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+    function DribbbleIcon() { return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#fff"/><path d="M2.5 5.8c2.5.8 5.2.6 7.5-.8M3 11c1.8-2 4.5-3.2 7.2-2.8M6.5 2.2c-.5 3 .2 6.2 2 8.8" stroke="#fff" strokeLinecap="round"/></svg>; }
+
+    function Header() {
+      const [scrolled,setScrolled]=useState(false);
+      useEffect(()=>{const h=()=>setScrolled(window.scrollY>50);window.addEventListener("scroll",h);return()=>window.removeEventListener("scroll",h);},[]);
+      return (
+        <motion.header className="header" initial={{y:-113}} animate={{y:0}} transition={{duration:0.7,ease:[0.22,1,0.36,1]}}
+          style={{boxShadow:scrolled?"0 1px 0 rgba(255,255,255,0.06)":"none"}}>
+          <div className="header-logo"><a href="index.html">AB</a></div>
+          <nav className="header-nav">
+            <a href="index.html#cases">Cases</a>
+            <a href="index.html#posters">Posters</a>
+            <a href="index.html#contact">Contact</a>
+          </nav>
+        </motion.header>
+      );
+    }
+
+    function App() {
+      return (
+        <div>
+          <Header />
+          <div style={{height:113}} />
+
+          {/* Meta bar */}
+          <SR variants={fadeIn}>
+            <div className="meta-bar">
+              {[["Industry","Legal AI"],["Role","Product Designer"],["Team","2 devs · PM · AI consultant"],["Tools","Figma"]].map(([label,value],i)=>(
+                <div className="meta-item" key={i}>
+                  <div className="meta-label">{label}</div>
+                  <div className="meta-value">{value}</div>
+                </div>
+              ))}
+            </div>
+          </SR>
+
+          {/* Hero image */}
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="hero-img">
+              <img src={ASSETS.hero} alt="IPMind hero" fetchpriority="high" />
+            </div>
+          </SR>
+
+          {/* About / Problem / Solution */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title">About the project</h2>
+                <div className="cb-text">
+                  <p>IP Mind is a legal-tech platform that uses AI to streamline patent essentiality analysis. It helps attorneys and IP professionals evaluate large patent portfolios faster through transparent, evidence-backed workflows designed for licensing and litigation.</p>
+                </div>
+              </div>
+            </SR>
+
+            <SR variants={fadeUp}>
+              <div className="content-block" style={{paddingTop:80}}>
+                <h2 className="cb-title">Problem</h2>
+                <div className="cb-text">
+                  <p>Patent essentiality analysis is done manually by attorneys — reviewing thousands of patents against technical standards like 5G or Wi-Fi. Slow, expensive, impossible to scale. A single portfolio could take months to evaluate.</p>
+                </div>
+              </div>
+            </SR>
+
+            <SR variants={fadeUp}>
+              <div className="content-block" style={{paddingTop:80}}>
+                <h2 className="cb-title">Solution</h2>
+                <div className="cb-text">
+                  <p>Design an AI-powered patent analysis workflow that transforms complex legal evaluations into transparent, evidence-backed insights. The platform enables attorneys to review patent essentiality faster, understand the reasoning behind each conclusion, and make confident decisions.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+
+          {/* Design process */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title">Design process</h2>
+                <div className="cb-text">
+                  <p>For this project, I followed the Double Diamond framework, adapting the process to business priorities and constraints.</p>
+                  <p style={{fontWeight:500,marginTop:24}}>Main constraints</p>
+                  <ul className="bullet-list constraints-list">
+                    <li>Limited startup budget and resources</li>
+                    <li>Tight delivery timelines</li>
+                    <li>Complex workflows supported by a two-person development team</li>
+                    <li>Continuously evolving product and business requirements</li>
+                  </ul>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.designProcess} alt="Double Diamond design process" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* 01 Research & Insights */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">01</span>Research & Insights</h2>
+                <div className="cb-text">
+                  <ul className="bullet-list">
+                    <li>Domain research to build foundational knowledge of patent essentiality analysis and legal workflows</li>
+                    <li>Competitor analysis (IPLytics, PatSeer) to understand positioning and existing UX patterns in patent tools</li>
+                    <li>Stakeholder interviews with the CEO, who was himself a practicing patent attorney and the primary end user. This gave us deep domain access and fast decision-making, but also meant requirements and user validation came from a single point of view — a constraint I kept in mind throughout the design process.</li>
+                  </ul>
+                </div>
+              </div>
+            </SR>
+          </div>
+
+          {/* Quote */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="quote-block">
+                <div className="quote-card">
+                  <p className="quote-text">"Most patent tools evaluate patents as a whole. But the real value lies within the individual claims. I need to understand which patents in our portfolio are truly worth defending."</p>
+                  <div className="quote-author">
+                    <div className="quote-avatar" />
+                    <span className="quote-name">CEO of IPMind</span>
+                  </div>
+                </div>
+              </div>
+            </SR>
+          </div>
+
+          {/* 02 Design & Collaboration */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">02</span>Design & Collaboration</h2>
+                <div className="cb-text">
+                  <p>Early on, I pushed to map the full user flow before touching UI, to surface gaps in the logic before they became expensive dev mistakes.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.wireflow} alt="User flow wireframe" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* 03 Key screens & decisions */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">03</span>Key screens & decisions</h2>
+                <div className="cb-text">
+                  <p>Patent data comes from different sources with inconsistent column names. Instead of blocking the entire import on any error, I designed a three-state mapping system — green for correctly mapped, yellow for optional fields the user can skip, red for mandatory fields that must be resolved before proceeding.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.screen1} alt="Data mapping screen" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* Patent selection */}
+          <div className="section-label-block">
+            <SR variants={fadeUp} style={{width:"33.33%"}}><div className="sl-label">Patent selection & Filtering</div></SR>
+            <SR variants={fadeUp} custom={1} style={{width:"66.66%"}}><div className="sl-text">Large patent portfolios can be difficult to navigate. I designed an advanced filtering system that allows users to refine results by multiple criteria without leaving the table view, making patent selection faster and more manageable.</div></SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.screen2} alt="Patent selection and filtering" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* AI-Powered claim analysis */}
+          <div className="section-label-block">
+            <SR variants={fadeUp} style={{width:"33.33%"}}><div className="sl-label">AI-Powered claim analysis</div></SR>
+            <SR variants={fadeUp} custom={1} style={{width:"66.66%"}}><div className="sl-text">To make AI-generated insights easier to validate, I designed a detailed analysis view that combines confidence scores, claim summaries, and categorization results. This helps users quickly understand why a patent was classified in a certain way and make informed decisions.</div></SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.screen3} alt="AI-powered claim analysis" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* 04 Design system */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">04</span>Design system</h2>
+                <div className="cb-text">
+                  <p>To support product scalability, I developed the first version of a design system, covering visual foundations, reusable components, and documentation. While intentionally lightweight at this stage, it provided a framework for future expansion, including additional component states and accessibility improvements.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div style={{paddingTop:60,display:"flex",justifyContent:"flex-end"}}>
+              <div style={{width:"66.66%",paddingRight:60}}>
+                <div className="img-block" style={{margin:0}}>
+                  <img src={ASSETS.designSystem} alt="Design system — colors and typography" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+                </div>
+              </div>
+            </div>
+          </SR>
+
+          {/* What I would do differently */}
+          <div className="content" style={{paddingTop:120}}>
+            <SR variants={fadeUp}>
+              <h2 style={{fontWeight:500,fontSize:32,letterSpacing:"-0.64px",lineHeight:1.25}}>What I would do differently</h2>
+            </SR>
+          </div>
+          <div className="cards-row">
+            {[
+              {num:"01",text:"Leverage an existing component library to accelerate the design process, maintain consistency, and reduce design errors."},
+              {num:"02",text:"Validate concepts with multiple patent attorneys, rather than relying primarily on only stakeholder's perspective."},
+              {num:"03",text:"Define the MVP earlier to prevent scope creep and maintain focus on the highest-impact features."}
+            ].map((card,i)=>(
+              <SR key={i} variants={fadeUp} custom={i} style={{flex:1,minWidth:0,display:"flex"}}>
+                <div className="diff-card">
+                  <span className="diff-num">{card.num}</span>
+                  <p className="diff-text">{card.text}</p>
+                </div>
+              </SR>
+            ))}
+          </div>
+
+          {/* Copyright */}
+          <SR variants={fadeIn}>
+            <div className="copyright-block">
+              <div className="copyright-label">Copyright notice</div>
+              <p className="copyright-text">Interface screens shown in this case study are proprietary materials of IP Mind and are displayed with permission. &copy; 2026 IP Mind Ltd. All rights reserved. The IPMIND name, logo, and software interface are proprietary. Unauthorised reproduction, distribution, or use is prohibited.</p>
+            </div>
+          </SR>
+
+          {/* Footer */}
+          <footer className="footer">
+            <div className="footer-top">
+              <div className="footer-cta">let's<br/>talk</div>
+              <div className="footer-right">
+                <SR variants={fadeIn} custom={1}>
+                  <div className="footer-socials">
+                    <a className="social-link filled" href="mailto:nastia.biriukova@gmail.com"><MailIcon color="#0F0F0F" /> Mail</a>
+                    <a className="social-link outlined" href="https://www.linkedin.com/in/ana-biriukova/" target="_blank" rel="noopener">LinkedIn</a>
+                    <a className="social-link outlined" href="https://dribbble.com/Biriukova77" target="_blank" rel="noopener"><DribbbleIcon /> Dribble</a>
+                  </div>
+                </SR>
+                <SR variants={fadeUp} custom={2}>
+                  <p className="footer-availability">Available for full-time and part-time roles, freelance projects, or casual coffee chats in Berlin.</p>
+                </SR>
+              </div>
+            </div>
+            <SR variants={fadeIn}>
+              <div className="footer-bottom">
+                <span>&copy; By Anastasiia Biriukova</span>
+                <span>2026</span>
+              </div>
+            </SR>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

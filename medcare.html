@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedCare — Case Study | Ana Biriukova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/framer-motion@11.18.2/dist/framer-motion.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0F0F0F; color: #fff;
+      font-family: 'Inter Tight', sans-serif;
+      -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center;
+      padding: 40px; height: 113px;
+      backdrop-filter: blur(8px); background: rgba(15,15,15,0.7);
+    }
+    .header-logo { flex: 1; min-width: 1px; font-family: 'Kunstler Script','Brush Script MT',cursive; font-size: 40px; line-height: 1.4; }
+    .header-logo a { color: #fff; }
+    .header-nav { flex: 1; min-width: 1px; display: flex; gap: 16px; align-items: center; }
+    .header-nav a { font-weight: 500; font-size: 16px; letter-spacing: -0.16px; position: relative; padding-bottom: 4px; }
+    .header-nav a::after { content:''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: #fff; transition: width 0.3s; }
+    .header-nav a:hover::after { width: 100%; }
+
+    .meta-bar {
+      display: flex; padding: 40px 60px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .meta-item { flex: 1; }
+    .meta-label { font-weight: 500; font-size: 16px; color: #9F9F9F; margin-bottom: 4px; letter-spacing: -0.16px; }
+    .meta-value { font-weight: 500; font-size: 16px; color: #fff; letter-spacing: -0.16px; }
+
+    .hero-img { width: 100%; aspect-ratio: 1440/767; background: #1a1a1a; overflow: hidden; }
+    .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    .content { padding: 0 60px; }
+    .content-block { padding: 120px 0 0; display: flex; gap: 0; align-items: flex-start; }
+    .content-block + .content-block { padding-top: 80px; }
+    .cb-title { width: 33.33%; flex-shrink: 0; font-weight: 500; font-size: 32px; line-height: 1.25; letter-spacing: -0.64px; }
+    .cb-title .num { display: inline; margin-right: 12px; }
+    .cb-text { width: 66.66%; font-weight: 500; font-size: 16px; line-height: 1.45; letter-spacing: -0.16px; }
+    .cb-text p + p { margin-top: 24px; }
+
+    /* Check items */
+    .check-list { list-style: none; }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 13px;
+      font-weight: 500; font-size: 16px; line-height: 2;
+      letter-spacing: -0.16px;
+    }
+    .check-icon {
+      width: 20px; height: 20px; flex-shrink: 0; margin-top: 6px;
+      border: 1.5px solid #9F9F9F; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .check-icon::after {
+      content: '✓'; font-size: 11px; color: #9F9F9F;
+    }
+
+    .img-block { margin: 60px 0 0; border-radius: 4px; overflow: hidden; background: #1a1a1a; }
+    .img-block img { width: 100%; display: block; }
+    .img-block.padded { margin-left: 60px; margin-right: 60px; }
+    .img-placeholder {
+      background: #1f1f1f; display: flex; align-items: center; justify-content: center;
+      color: #9F9F9F; font-size: 14px; font-weight: 500; border-radius: 4px;
+    }
+    .bullet-list {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .bullet-list li {
+      position: relative; padding-left: 16px;
+      font-weight: 500; font-size: 16px; line-height: 1.45;
+      letter-spacing: -0.16px;
+    }
+    .bullet-list li + li { margin-top: 8px; }
+    .bullet-list li::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: #9F9F9F;
+    }
+
+    .section-label-block { padding: 80px 60px 0; display: flex; align-items: flex-start; }
+    .sl-label { width: 33.33%; font-weight: 500; font-size: 16px; letter-spacing: -0.16px; }
+    .sl-text { width: 66.66%; font-weight: 500; font-size: 16px; line-height: 1.45; letter-spacing: -0.16px; }
+
+    .img-row { display: flex; gap: 24px; padding: 60px 60px 0; }
+    .img-row > div { flex: 1; border-radius: 4px; overflow: hidden; }
+
+    .footer {
+      margin-top: 120px; background: #0F0F0F; padding: 40px;
+      display: flex; flex-direction: column; gap: 127px;
+    }
+    .footer-top { display: flex; flex-wrap: wrap; gap: 64px 24px; }
+    .footer-cta { flex: 1; min-width: 466px; font-weight: 500; font-size: clamp(80px,12.8vw,184px); text-transform: uppercase; line-height: 0.87; letter-spacing: -3.68px; height: 288px; display: flex; flex-direction: column; justify-content: center; }
+    .footer-right { flex: 1; min-width: 307px; height: 288px; display: flex; flex-direction: column; justify-content: space-between; }
+    .footer-socials { display: flex; flex-wrap: wrap; gap: 8px; }
+    .social-link { display: inline-flex; align-items: center; gap: 4px; border-radius: 54px; padding: 8px 12px; font-weight: 500; font-size: 16px; letter-spacing: -0.16px; transition: background 0.3s, color 0.3s; }
+    .social-link.filled { background: #fff; color: #0F0F0F; }
+    .social-link.filled:hover { background: #ddd; }
+    .social-link.outlined { border: 1px solid #fff; color: #fff; }
+    .social-link.outlined:hover { background: #fff; color: #0F0F0F; }
+    .social-link svg { width: 16px; height: 16px; }
+    .footer-availability { font-weight: 500; font-size: 32px; line-height: 1.24; letter-spacing: -0.64px; }
+    .footer-bottom { display: flex; justify-content: space-between; font-weight: 400; font-size: 16px; color: #9F9F9F; }
+
+    @media (max-width: 1024px) {
+      .header { padding: 24px 30px; height: 80px; }
+      .content { padding: 0 30px; }
+      .meta-bar { padding: 30px; flex-wrap: wrap; gap: 20px; }
+      .meta-item { min-width: 45%; }
+      .content-block { flex-direction: column; gap: 24px; }
+      .cb-title, .cb-text { width: 100%; }
+      .section-label-block { padding-left: 30px; padding-right: 30px; flex-direction: column; gap: 16px; }
+      .sl-label, .sl-text { width: 100%; }
+      .img-row { padding: 40px 30px 0; }
+      .img-block.padded { margin-left: 30px; margin-right: 30px; }
+      .footer { padding: 30px; gap: 80px; }
+      .footer-availability { font-size: 26px; }
+    }
+    @media (max-width: 768px) {
+      .header { padding: 16px 20px; height: 64px; }
+      .header-logo { font-size: 32px; }
+      .content { padding: 0 20px; }
+      .meta-bar { padding: 20px; }
+      .meta-item { min-width: 100%; }
+      .content-block { padding-top: 60px; }
+      .cb-title { font-size: 26px; }
+      .section-label-block { padding-left: 20px; padding-right: 20px; }
+      .img-row { flex-direction: column; padding: 30px 20px 0; }
+      .img-block.padded { margin-left: 20px; margin-right: 20px; }
+      .footer { padding: 20px; gap: 60px; }
+      .footer-cta { min-width: 100%; height: auto; }
+      .footer-right { height: auto; gap: 32px; }
+      .footer-availability { font-size: 22px; }
+      .footer-bottom { flex-direction: column; gap: 8px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { motion, useInView } = window["framer-motion"] || window.Motion;
+    const { useRef, useState, useEffect } = React;
+
+    const ASSETS = {
+      hero: "assets/medcare-hero.webp",
+      doctor: "assets/medcare-doctor.webp",
+      iphone: "assets/medcare-iphone.webp",
+      ia: "assets/medcare-ia.webp",
+      components: "assets/medcare-components.webp",
+      appointments: "assets/medcare-appointments.webp",
+      patientDoctors: "assets/medcare-patient-doctors.webp",
+      patientModal: "assets/medcare-patient-modal.webp",
+      patientList: "assets/medcare-patient-list.webp",
+      medicalRecord: "assets/medcare-medical-record.webp",
+      mobileMockups: "assets/medcare-mobile-mockups.webp",
+    };
+
+    const fadeUp = { hidden:{opacity:0,y:40}, visible:(i=0)=>({opacity:1,y:0,transition:{duration:0.7,ease:[0.22,1,0.36,1],delay:i*0.12}}) };
+    const fadeIn = { hidden:{opacity:0}, visible:(i=0)=>({opacity:1,transition:{duration:0.6,ease:"easeOut",delay:i*0.1}}) };
+    const scaleIn = { hidden:{opacity:0,scale:0.96}, visible:(i=0)=>({opacity:1,scale:1,transition:{duration:0.8,ease:[0.22,1,0.36,1],delay:i*0.12}}) };
+
+    function SR({children,variants=fadeUp,custom=0,threshold=0.15,style,className}) {
+      const ref=useRef(null); const isInView=useInView(ref,{once:true,amount:threshold});
+      return <motion.div ref={ref} initial="hidden" animate={isInView?"visible":"hidden"} variants={variants} custom={custom} style={style} className={className}>{children}</motion.div>;
+    }
+
+    function DocIcon() { return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M9.333 2v3.333h3.333M5.333 8h5.334M5.333 10.667h5.334M4 14h8a1.333 1.333 0 001.333-1.333V5.333L9.667 2H4A1.333 1.333 0 002.667 3.333v9.334A1.333 1.333 0 004 14z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+    function MailIcon({color="#0F0F0F"}) { return <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M2.5 6.667l6.875 4.583a1.25 1.25 0 001.25 0L17.5 6.667M4.167 15.833h11.666A1.667 1.667 0 0017.5 14.167V5.833A1.667 1.667 0 0015.833 4.167H4.167A1.667 1.667 0 002.5 5.833v8.334a1.667 1.667 0 001.667 1.666z" stroke={color} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+    function DribbbleIcon() { return <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#fff"/><path d="M2.5 5.8c2.5.8 5.2.6 7.5-.8M3 11c1.8-2 4.5-3.2 7.2-2.8M6.5 2.2c-.5 3 .2 6.2 2 8.8" stroke="#fff" strokeLinecap="round"/></svg>; }
+    function Placeholder({ratio,label}) { return <div className="img-placeholder" style={{aspectRatio:ratio,width:"100%"}}>{label||"Image"}</div>; }
+
+    function Header() {
+      const [scrolled,setScrolled]=useState(false);
+      useEffect(()=>{const h=()=>setScrolled(window.scrollY>50);window.addEventListener("scroll",h);return()=>window.removeEventListener("scroll",h);},[]);
+      return (
+        <motion.header className="header" initial={{y:-113}} animate={{y:0}} transition={{duration:0.7,ease:[0.22,1,0.36,1]}}>
+          <div className="header-logo"><a href="index.html">AB</a></div>
+          <nav className="header-nav"><a href="index.html#cases">Сases</a><a href="index.html#posters">Posters</a><a href="index.html#contact">Contact</a></nav>
+        </motion.header>
+      );
+    }
+
+    function App() {
+      return (
+        <div>
+          <Header />
+          <div style={{height:113}} />
+
+          <SR variants={fadeIn}>
+            <div className="meta-bar">
+              {[["Industry","Healthcare"],["Role","Product designer"],["Team","1 dev · PM · Lead UI/UX Designer"],["Tools","Figma"]].map(([l,v],i)=>(
+                <div className="meta-item" key={i}><div className="meta-label">{l}</div><div className="meta-value">{v}</div></div>
+              ))}
+            </div>
+          </SR>
+
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="hero-img">
+              {ASSETS.hero ? <img src={ASSETS.hero} alt="MedCare hero" fetchpriority="high" /> : <Placeholder ratio="1440/767" label="Hero" />}
+            </div>
+          </SR>
+
+          {/* About / Challenges / Goals */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title">About the project</h2>
+                <div className="cb-text">
+                  <p>MedCare is a CRM system that streamlines physicians' workflows, serving as both an assistant and a medical database.</p>
+                </div>
+              </div>
+            </SR>
+            <SR variants={fadeUp}>
+              <div className="content-block" style={{paddingTop:80}}>
+                <h2 className="cb-title">Challenges</h2>
+                <div className="cb-text">
+                  <ul className="bullet-list">
+                    <li>Complexity of data visualization</li>
+                    <li>Inefficient management of appointments and patient notes</li>
+                    <li>Difficulties in tracking and reviewing patient info</li>
+                    <li>Device compatibility</li>
+                  </ul>
+                </div>
+              </div>
+            </SR>
+            <SR variants={fadeUp}>
+              <div className="content-block" style={{paddingTop:80}}>
+                <h2 className="cb-title">Goals</h2>
+                <div className="cb-text">
+                  <ul className="check-list">
+                    {[
+                      "Intuitive and efficient data visualization",
+                      "Structured and clear interface to reduce scheduling conflicts",
+                      "Efficient Patient Accounting system",
+                      "Responsive platform for desktop and mobile"
+                    ].map((item,i) => (
+                      <li className="check-item" key={i}><span className="check-icon" />{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </SR>
+          </div>
+
+          {/* Two images side by side */}
+          <div className="img-row">
+            <SR variants={scaleIn}><img src={ASSETS.doctor} alt="Doctor using MedCare" loading="lazy" decoding="async" style={{width:"100%",borderRadius:4}} /></SR>
+            <SR variants={scaleIn} custom={1}><img src={ASSETS.iphone} alt="MedCare mobile app" loading="lazy" decoding="async" style={{width:"100%",borderRadius:4}} /></SR>
+          </div>
+
+          {/* 01 Information architecture */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">01</span>Information architecture</h2>
+                <div className="cb-text">
+                  <p>By organizing workflows around key user tasks—appointment management, patient records, professional updates, and account settings—I established a logical structure that supports both daily operations and future product growth. This foundation helped streamline user journeys and improve discoverability across the platform.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.ia} alt="Information architecture diagram" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* 02 Components library */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">02</span>Components library</h2>
+                <div className="cb-text">
+                  <p>As the product evolved, consistency and scalability became essential. To support efficient design and development processes, I created the first version of a component library that established a shared visual language across the platform. The library defined reusable patterns for forms, tables, inputs, status indicators, and interactive states, ensuring alignment between design and development.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <div className="content" style={{paddingTop:60}}>
+            <div style={{marginLeft:"33.33%"}}>
+              <SR variants={scaleIn}>
+                <img src={ASSETS.components} alt="Components library" style={{width:"100%",display:"block",borderRadius:4}} />
+              </SR>
+            </div>
+          </div>
+
+          {/* 03 Design decisions */}
+          <div className="content">
+            <SR variants={fadeUp}>
+              <div className="content-block">
+                <h2 className="cb-title"><span className="num">03</span>Design decisions</h2>
+                <div className="cb-text">
+                  <p>The appointment management experience was designed to help physicians quickly schedule, modify, and monitor consultations. Key information is prioritized to support faster decision-making, reduce administrative effort, and provide instant access to patient records.</p>
+                </div>
+              </div>
+            </SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.appointments} alt="Appointment management — weekly view" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* Patient list */}
+          <div className="section-label-block">
+            <SR variants={fadeUp} style={{width:"33.33%"}}><div className="sl-label">Patient list</div></SR>
+            <SR variants={fadeUp} custom={1} style={{width:"66.66%"}}><div className="sl-text">To simplify patient management, I designed a centralized workspace that allows healthcare professionals to quickly access patient records, monitor treatment status, and maintain accurate information across the platform.</div></SR>
+          </div>
+          <div className="img-row">
+            <SR variants={scaleIn}><img src={ASSETS.patientDoctors} alt="Doctor with patient" loading="lazy" decoding="async" style={{width:"100%",borderRadius:4}} /></SR>
+            <SR variants={scaleIn} custom={1}><img src={ASSETS.patientModal} alt="Add new patient modal" loading="lazy" decoding="async" style={{width:"100%",borderRadius:4}} /></SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.patientList} alt="Patient list — desktop view" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* Medical record */}
+          <div className="section-label-block">
+            <SR variants={fadeUp} style={{width:"33.33%"}}><div className="sl-label">Medical record</div></SR>
+            <SR variants={fadeUp} custom={1} style={{width:"66.66%"}}><div className="sl-text">The medical record experience centralizes patient information into a single workspace, enabling physicians to quickly review medical history, laboratory results, medications, and appointments. This structure improves information accessibility, supports informed decision-making, and reduces time spent searching across multiple records.</div></SR>
+          </div>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:60}}>
+              <img src={ASSETS.medicalRecord} alt="Medical record — desktop view" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+          <SR variants={scaleIn} threshold={0.1}>
+            <div className="img-block padded" style={{marginTop:24}}>
+              <img src={ASSETS.mobileMockups} alt="Mobile mockups" loading="lazy" decoding="async" style={{width:"100%",display:"block"}} />
+            </div>
+          </SR>
+
+          {/* Footer */}
+          <footer className="footer">
+            <div className="footer-top">
+              <div className="footer-cta">let's<br/>talk</div>
+              <div className="footer-right">
+                <SR variants={fadeIn} custom={1}>
+                  <div className="footer-socials">
+                    <a className="social-link filled" href="mailto:nastia.biriukova@gmail.com"><MailIcon color="#0F0F0F" /> Mail</a>
+                    <a className="social-link outlined" href="https://www.linkedin.com/in/ana-biriukova/" target="_blank" rel="noopener">LinkedIn</a>
+                    <a className="social-link outlined" href="https://dribbble.com/Biriukova77" target="_blank" rel="noopener"><DribbbleIcon /> Dribble</a>
+                  </div>
+                </SR>
+                <SR variants={fadeUp} custom={2}><p className="footer-availability">Available for full-time and part-time roles, freelance projects, or casual coffee chats in Berlin.</p></SR>
+              </div>
+            </div>
+            <SR variants={fadeIn}><div className="footer-bottom"><span>&copy; By Anastasiia Biriukova</span><span>2026</span></div></SR>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
