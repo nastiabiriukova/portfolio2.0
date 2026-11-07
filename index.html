@@ -230,6 +230,83 @@
       color: #9F9F9F;
     }
 
+
+    /* ---- NDA modal ---- */
+    .case-card[role="button"]:focus-visible { outline: 1px solid #fff; outline-offset: 8px; border-radius: 4px; }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background: rgba(15,15,15,0.7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .modal {
+      width: 100%; max-width: 720px; max-height: calc(100vh - 48px); overflow-y: auto;
+      background: #1a1a1a; border-radius: 8px;
+      padding: 40px; display: flex; flex-direction: column; gap: 40px;
+    }
+    .modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+    .modal-title {
+      font-weight: 500; text-transform: uppercase;
+      font-size: clamp(44px, 8vw, 96px);
+      line-height: 0.87; letter-spacing: -0.02em;
+    }
+    .modal-close {
+      flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid #fff; color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    .modal-close:hover, .modal-close:focus-visible { background: #fff; color: #0F0F0F; outline: none; }
+    .modal-desc {
+      font-weight: 500; font-size: 16px; line-height: 1.45; letter-spacing: -0.16px;
+      max-width: 60ch;
+    }
+    .modal-link-block {
+      display: flex; flex-direction: column; gap: 4px;
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-label {
+      font-weight: 500; font-size: 16px; line-height: 1.45; letter-spacing: -0.16px; color: #9F9F9F;
+    }
+    .modal-link-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .modal-link-input {
+      flex: 1; min-width: 200px;
+      background: transparent; color: #fff; border: none; border-radius: 0;
+      padding: 8px 0; font-family: inherit; font-weight: 500; font-size: 16px; letter-spacing: -0.16px;
+      text-overflow: ellipsis;
+    }
+    .modal-link-input:focus-visible { outline: 1px solid #fff; outline-offset: 4px; }
+    .modal-copy {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      border-radius: 54px; padding: 8px 12px;
+      background: #fff; color: #0F0F0F;
+      font-weight: 500; font-size: 16px; letter-spacing: -0.16px;
+      transition: background 0.3s;
+    }
+    .modal-copy:hover { background: #ddd; }
+    .modal-copy:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .modal-copy svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .modal-award-row {
+      margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+    }
+    .modal-award {
+      padding-top: 24px;
+      font-weight: 500; font-size: clamp(24px, 4vw, 32px); line-height: 1.25; letter-spacing: -0.64px;
+      max-width: 22ch;
+    }
+    .modal-ribbons { display: flex; gap: 14px; flex-shrink: 0; }
+    .ribbon { display: block; width: 44px; height: 71px; }
+    .ribbon text { font-family: 'Inter Tight', sans-serif; }
+    .modal-title { flex: 1; min-width: 0; }
+    @media (max-width: 768px) {
+      .modal { padding: 24px 20px; gap: 32px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .case-img-wrap img { transition: none; }
+    }
+
     /* ---- Responsive ---- */
     @media (max-width: 1024px) {
       .header { padding: 24px 30px; height: 80px; }
@@ -284,11 +361,20 @@
       case1: "assets/ipmind-cover.webp",
       case2Main: "assets/ecommerce-cover.webp",
       case2Phone: "assets/ecommerce-cover.webp",
-      case3Nda: "assets/nda-cover.webp",
+      case3Nda: "assets/stay-cover.webp",
       case4: "assets/medcare-cover.webp",
       poster1: "assets/poster-1.webp",
       poster2: "assets/poster-2.webp",
       poster3: "assets/poster-3.webp",
+    };
+
+    /* ========== NDA PROJECT (edit text and link here) ========== */
+    const NDA_CASE = {
+      title: "Insurance platform",
+      link: "https://www.behance.net/gallery/249142983/Stay-Product-Platform-Redesign",
+      description:
+        "At Halo Lab, I was responsible for the core UX and UI of Stay’s B2C and B2B insurance platforms across web and mobile. I translated complex insurance journeys into clear user flows and detailed interfaces, helping customers explore coverage, manage policies, and access personalized recommendations. For advisors, I designed workflows to review client information and manage recommendations, creating a consistent experience across both platforms.",
+      award: "Featured in Behance’s UI/UX and Adobe XD galleries",
     };
 
     /* ========== ANIMATION HELPERS ========== */
@@ -326,7 +412,7 @@
       visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
     };
 
-    function ScrollReveal({ children, variants = fadeUp, custom = 0, threshold = 0.15, style, className }) {
+    function ScrollReveal({ children, variants = fadeUp, custom = 0, threshold = 0.15, style, className, ...rest }) {
       const ref = useRef(null);
       const isInView = useInView(ref, { once: true, amount: threshold });
       return (
@@ -338,6 +424,7 @@
           custom={custom}
           style={style}
           className={className}
+          {...rest}
         >
           {children}
         </motion.div>
@@ -376,6 +463,140 @@
           <path d="M4.667 6.667v5.333M4.667 4h.007M8 12V8.667c0-1.105.895-2 2-2s2 .895 2 2V12M8 12V6.667" stroke={color} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           <rect x="1.5" y="1.5" width="13" height="13" rx="2" stroke={color} strokeWidth="1"/>
         </svg>
+      );
+    }
+
+    function CopyIcon() {
+      return (
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+          <path d="M10.5 5.5V4A1.5 1.5 0 009 2.5H4A1.5 1.5 0 002.5 4v5A1.5 1.5 0 004 10.5h1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        </svg>
+      );
+    }
+
+    function CheckIcon() {
+      return (
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8.5l3.2 3.2L13 4.8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      );
+    }
+
+    function CloseIcon() {
+      return (
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+        </svg>
+      );
+    }
+
+    function Ribbon({ bg, fg, label, text, weight = 500 }) {
+      return (
+        <svg className="ribbon" viewBox="0 0 248 400" role="img" aria-label={text}>
+          <title>{text}</title>
+          <path d="M0 0H248V400L124 333L0 400Z" fill={bg} />
+          <text x="124" y="275" textAnchor="middle" fill={fg} fontSize="96" fontWeight={weight}>{label}</text>
+        </svg>
+      );
+    }
+
+    /* ========== NDA MODAL ========== */
+    function NdaModal({ open, onClose }) {
+      const [copied, setCopied] = useState(false);
+      const closeRef = useRef(null);
+      const inputRef = useRef(null);
+
+      useEffect(() => {
+        if (!open) { setCopied(false); return; }
+        const previouslyFocused = document.activeElement;
+        const onKey = (e) => { if (e.key === "Escape") onClose(); };
+        document.addEventListener("keydown", onKey);
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        closeRef.current && closeRef.current.focus();
+        return () => {
+          document.removeEventListener("keydown", onKey);
+          document.body.style.overflow = prevOverflow;
+          previouslyFocused && previouslyFocused.focus && previouslyFocused.focus();
+        };
+      }, [open]);
+
+      const copyLink = async () => {
+        let ok = false;
+        try {
+          await navigator.clipboard.writeText(NDA_CASE.link);
+          ok = true;
+        } catch (e) {
+          try {
+            inputRef.current.select();
+            ok = document.execCommand("copy");
+          } catch (e2) {}
+        }
+        if (ok) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
+      };
+
+      return (
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              className="modal-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={onClose}
+            >
+              <motion.div
+                className="modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="nda-modal-title"
+                initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.98 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="modal-head">
+                  <h2 className="modal-title" id="nda-modal-title">{NDA_CASE.title}</h2>
+                  <button className="modal-close" ref={closeRef} onClick={onClose} aria-label="Close">
+                    <CloseIcon />
+                  </button>
+                </div>
+                <p className="modal-desc">{NDA_CASE.description}</p>
+                <div className="modal-link-block">
+                  <label className="modal-label" htmlFor="nda-link">Project link</label>
+                  <div className="modal-link-row">
+                    <input
+                      id="nda-link"
+                      ref={inputRef}
+                      className="modal-link-input"
+                      type="text"
+                      readOnly
+                      value={NDA_CASE.link}
+                      onFocus={(e) => e.target.select()}
+                    />
+                    <button className="modal-copy" onClick={copyLink}>
+                      {copied ? <CheckIcon /> : <CopyIcon />}
+                      <span aria-live="polite">{copied ? "Copied" : "Copy link"}</span>
+                    </button>
+                  </div>
+                  <div className="modal-award-row">
+                    <p className="modal-award">{NDA_CASE.award}</p>
+                    <div className="modal-ribbons">
+                      <Ribbon bg="#A59560" fg="#fff" label="UI" text="Featured in Behance’s UI/UX gallery" />
+                      <Ribbon bg="#42081F" fg="#EE4D6E" weight={700} label="Xd" text="Featured in Behance’s Adobe XD gallery" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       );
     }
 
@@ -458,9 +679,20 @@
     }
 
     /* ========== CASE CARD ========== */
-    function CaseCard({ image, description, year, children, delay = 0, href, priority }) {
+    function CaseCard({ image, description, year, children, delay = 0, href, priority, onClick }) {
       const inner = (
-        <ScrollReveal variants={scaleIn} custom={delay} className="case-card" threshold={0.1}>
+        <ScrollReveal
+          variants={scaleIn}
+          custom={delay}
+          className="case-card"
+          threshold={0.1}
+          {...(onClick ? {
+            role: "button",
+            tabIndex: 0,
+            onClick,
+            onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } },
+          } : {})}
+        >
           {children || (
             <div className="case-img-wrap">
               <img src={image} alt="" loading={priority ? "eager" : "lazy"} decoding="async" fetchpriority={priority ? "high" : "auto"} />
@@ -478,8 +710,10 @@
 
     /* ========== CASES ========== */
     function Cases() {
+      const [ndaOpen, setNdaOpen] = useState(false);
       return (
         <section className="cases" id="cases">
+          <NdaModal open={ndaOpen} onClose={() => setNdaOpen(false)} />
           <div className="cases-row">
             <CaseCard
               image={ASSETS.case1}
@@ -493,6 +727,7 @@
               description="Crafted a connected B2C and B2B insurance platform that simplifies policy management, improves advisor workflows, and helps users make informed coverage decisions."
               year="2026"
               delay={1}
+              onClick={() => setNdaOpen(true)}
             >
             <div className="case-img-wrap">
   <img src={ASSETS.case3Nda} alt="" loading="lazy" decoding="async" />
