@@ -248,7 +248,7 @@
     .modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
     .modal-title {
       font-weight: 500; text-transform: uppercase;
-      font-size: clamp(44px, 8vw, 96px);
+      font-size: clamp(40px, 7.5vw, 88px);
       line-height: 0.87; letter-spacing: -0.02em;
     }
     .modal-close {
@@ -287,19 +287,9 @@
     @media (max-width: 640px) {
       .modal-award { white-space: normal; }
     }
-    .modal-ribbons { display: flex; gap: 14px; flex-shrink: 0; align-self: flex-start; margin-top: -40px; }
-    .ribbon { display: block; width: 44px; height: 71px; }
-    .ribbon text { font-family: 'Inter Tight', sans-serif; }
     .modal-title { flex: 1; min-width: 0; }
     @media (max-width: 768px) {
       .modal { padding: 24px 20px; gap: 32px; }
-      .modal-ribbons { margin-top: -24px; }
-    }
-    @media (max-width: 560px) {
-      .modal-head { flex-wrap: wrap; }
-      .modal-ribbons { order: 1; }
-      .modal-close { order: 2; margin-left: auto; }
-      .modal-title { order: 3; flex-basis: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
       .case-img-wrap img { transition: none; }
@@ -480,16 +470,6 @@
       );
     }
 
-    function Ribbon({ bg, fg, label, text, weight = 500 }) {
-      return (
-        <svg className="ribbon" viewBox="0 0 248 400" role="img" aria-label={text}>
-          <title>{text}</title>
-          <path d="M0 0H248V400L124 333L0 400Z" fill={bg} />
-          <text x="124" y="275" textAnchor="middle" fill={fg} fontSize="96" fontWeight={weight}>{label}</text>
-        </svg>
-      );
-    }
-
     /* ========== NDA MODAL ========== */
     function NdaModal({ open, onClose }) {
       const closeRef = useRef(null);
@@ -532,10 +512,6 @@
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="modal-head">
-                  <div className="modal-ribbons">
-                    <Ribbon bg="#A59560" fg="#fff" label="UI" text="Featured in Behance’s UI/UX gallery" />
-                    <Ribbon bg="#42081F" fg="#EE4D6E" weight={700} label="Xd" text="Featured in Behance’s Adobe XD gallery" />
-                  </div>
                   <h2 className="modal-title" id="nda-modal-title">{NDA_CASE.title}</h2>
                   <button className="modal-close" ref={closeRef} onClick={onClose} aria-label="Close">
                     <CloseIcon />
